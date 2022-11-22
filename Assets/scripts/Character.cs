@@ -7,7 +7,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 using Unity.Netcode;
 using System.Threading.Tasks;
-
+using Cinemachine;
 public abstract class Character : NetworkBehaviour
 {
     public GameObject vcam;
@@ -17,26 +17,30 @@ public abstract class Character : NetworkBehaviour
                  _cdQ,_cdW,_cdE,_cdR;           //cds de habilidades por personaje
     public void Start()
     {
-        base.OnNetworkSpawn();
         if(!IsOwner)
         {
-            vcam.SetActive(false);
             return;
         }
-        agent = transform.root.GetComponent<NavMeshAgent>();   
+        agent = transform.root.GetComponent<NavMeshAgent>();
+        var cam = GameObject.Find("cam").GetComponent<CinemachineVirtualCamera>();
+        cam.LookAt = transform;
+        //cam.Follow = transform;
+        UIManager.Instance.StartUISystem(this);
+
         StartCoroutine(Cds());
     }
     IEnumerator Cds()
     {
         while (true)
         {
-          cdQ--; cdE--; cdW--; cdR--;
+          cdQ-=.1f; cdE -= .1f; cdW -= .1f; cdR -= .1f;
           if (cdQ <= 0) cdQ = 0;
            if (cdW <= 0) cdW = 0;
            if (cdE <= 0) cdE = 0;
            if (cdR <= 0) cdR = 0;
            Debug.Log($"cooldowns q: {cdQ},w = {cdW}, e = {cdE}, r = {cdR}");
-           yield return new WaitForSecondsRealtime(1);
+            
+           yield return new WaitForSecondsRealtime(.1f);
         }
     }
     private void Update()
@@ -51,6 +55,8 @@ public abstract class Character : NetworkBehaviour
                 if (hit.transform.CompareTag("plataforma"))
                 {
                  agent.isStopped = true;
+                //aplicar rotacion inmediata para evitar giro
+                //transform.root.LookAt(hit.point);
                     Debug.Log("plataforma colicionada");
                      agent.destination = hit.point;
                        agent.isStopped = false;
