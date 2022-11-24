@@ -9,14 +9,19 @@ using System.Threading.Tasks;
 public class Camera2 : MonoBehaviour
 {
     CinemachineVirtualCamera cam;
-    private async void Update()
+     public GameObject targetFollow;
+    private void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        cam = GetComponent<CinemachineVirtualCamera>();
+    }
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Space))
         {
-            var players = GameObject.FindGameObjectsWithTag("Player");
-            cam.Follow = players.Where(p => p.GetComponent<NetworkObject>().IsOwner is true).First().transform;
-            await Task.Delay(100);
-            cam.Follow = null;
+            cam.Follow = targetFollow.transform;
+
+            return;
         }
+        cam.Follow = null;          
     }
 }
