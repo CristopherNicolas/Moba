@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,11 +17,5 @@ public class GameManager : MonoBehaviour
         }
         else Destroy(gameObject);
     }
-    private void Start()
-    {
-        if (estaSiendoServer)
-        {
-
-        }
-    }
+ 
 }

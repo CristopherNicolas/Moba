@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Unity.Netcode;
 public class Bruja : Character
 {
+    [ServerRpc]
     protected override void Q()
     {
         base.Q();

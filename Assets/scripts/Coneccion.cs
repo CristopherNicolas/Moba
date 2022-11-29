@@ -5,23 +5,11 @@ using UnityEngine.UI;
 using Unity.Netcode;
 public class Coneccion : MonoBehaviour
 {
-    public Button join, host;
     private void Start()
     {
-        join.onClick.AddListener(() =>
-        {
-            NetworkManager.Singleton.StartClient();
-            CerrarBotones();
-        });
-        host.onClick.AddListener(() =>
-        {
+        if (GameManager.instance.estaSiendoServer)
             NetworkManager.Singleton.StartHost();
-            CerrarBotones();
-        });
+        else NetworkManager.Singleton.StartClient();
     }
-    void CerrarBotones()
-    {
-        join.transform.localScale = Vector3.zero;
-        host.transform.localScale = Vector3.zero;
-    }
+    
 }

@@ -12,5 +12,6 @@ public class AsignTeam : NetworkBehaviour
         if (OwnerClientId > 0) gameObject.tag = "red";
         else gameObject.tag = "blue";
         Debug.Log($"client id = {OwnerClientId} , tag = {tag}");
+        GameManager.instance.haComenzado = true;
     }
 }

@@ -10,7 +10,9 @@ public class MinionSpawner : NetworkBehaviour
     
     public IEnumerator Start()
     {
+        GameManager.instance.haComenzado = true;
         if (!IsHost) yield break;
+        yield return new WaitUntil(() => GameManager.instance.haComenzado);
         while (true)
         {
             yield return new WaitForSeconds(15);
@@ -18,6 +20,7 @@ public class MinionSpawner : NetworkBehaviour
             {
                 yield return new WaitForSeconds(.7f);
                 SpawnServerRpc();
+                Debug.Log("FLAG");
             }
         }
     }
