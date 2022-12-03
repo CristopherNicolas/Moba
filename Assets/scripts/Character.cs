@@ -11,11 +11,10 @@ using Cinemachine;
 public abstract class Character : NetworkBehaviour
 {
     public GameObject vcam;
-    RaycastHit hit;
     NavMeshAgent agent;
     public Animator characterAnimator;
     public bool isDead;
-    public float hp=600;
+    public float hp=600,maxHP=600;
     public float cdQ=7, cdW=12, cdE=20, cdR=90, //cds de habilidades en partida
                  _cdQ,_cdW,_cdE,_cdR;           //cds de habilidades por personaje
     public void Start()
@@ -24,7 +23,10 @@ public abstract class Character : NetworkBehaviour
         agent = transform.root.GetComponent<NavMeshAgent>();
         var cam = GameObject.Find("cam").GetComponent<CinemachineVirtualCamera>();
         cam.LookAt = transform;
-        cam.GetComponent<Camera2>().targetFollow = gameObject;  
+        cam.GetComponent<Camera2>().targetFollow = gameObject;
+
+        cam.LookAt = null;
+       // cam.GetComponent<Camera2>().targetFollow = gameObject;
         UIManager.Instance.StartUISystem(this);
 
         StartCoroutine(Cds());
@@ -47,7 +49,8 @@ public abstract class Character : NetworkBehaviour
     private void Update()
     {
       if (!IsOwner) return;
-        if(hp<=0) MorirServerRpc();
+        RaycastHit hit;
+        if (hp<=0) MorirServerRpc();
         if (Input.GetKeyDown(KeyCode.Q) && cdQ <= 0) Q();
         else if (Input.GetKeyDown(KeyCode.W) && cdW <= 0) W();
         else if (Input.GetKeyDown(KeyCode.E) && cdE <= 0) E();
@@ -64,19 +67,23 @@ public abstract class Character : NetworkBehaviour
             characterAnimator.SetFloat("speed", 1);
             }
         
-        else if (agent.isStopped) characterAnimator.SetFloat("speed", 0);
+        else if (agent.remainingDistance<=0.2f) characterAnimator.SetFloat("speed", 0);
+        else characterAnimator.SetFloat("speed", 1);
+        
 
     }
     int cdMuerte=5;
     [ServerRpc]
     public virtual  void MorirServerRpc()
     {
-        characterAnimator.SetTrigger("death");
+        characterAnimator.SetBool("death",true);
         //desactivar movimiento, desactivar habilidades hasta que se complete un  
-        Invoke("SetPos", cdMuerte);
+        Invoke("SetPos", cdMuerte); 
     }
     void SetPos()
     {
+        hp = maxHP;
+        characterAnimator.SetBool("death", false);
         transform.root.transform.position = CompareTag("red") ?
             new Vector3(-0.600000024f, 7.5999999f, -58.7299995f)
             : new Vector3(-0.600000024f, 7.5999999f, 58.7299995f);
