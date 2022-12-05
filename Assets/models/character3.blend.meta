@@ -2,7 +2,10 @@ fileFormatVersion: 2
 guid: c43714ea376600346b55d0e8ff23089e
 ModelImporter:
   serializedVersion: 21300
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      74: -623603649343465320
+    second: Scene
   externalObjects: {}
   materials:
     materialImportMode: 2

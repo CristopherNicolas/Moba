@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public bool estaSiendoServer, haComenzado;
+    public string personajeSeleccionado="Anne";
     private void Awake()
     {
         if (instance is null)
